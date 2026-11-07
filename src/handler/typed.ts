@@ -1,7 +1,7 @@
 import { text } from 'node:stream/consumers';
-import type { Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/decoder';
-import { DecodeError } from '@chubbyts/chubbyts-decode-encode/dist/decoder/decoder';
-import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/encoder';
+import type { Decoder } from '@chubbyts/chubbyts-decode-encode/decoder/decoder';
+import { DecodeError } from '@chubbyts/chubbyts-decode-encode/decoder/decoder';
+import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import { createBadRequest } from '@chubbyts/chubbyts-http-error/dist/http-error';
 import type { Handler } from '@chubbyts/chubbyts-http-types/handler';
 import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/message';

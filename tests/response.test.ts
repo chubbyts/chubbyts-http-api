@@ -1,5 +1,5 @@
-import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
-import { EncodeError } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
+import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
+import { EncodeError } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import { describe, expect, test } from 'vitest';
 import { ZodError } from 'zod';
 import { createNotFound } from '@chubbyts/chubbyts-http-error/dist/http-error';

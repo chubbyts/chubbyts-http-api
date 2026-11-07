@@ -49,7 +49,7 @@ It ships:
 ## Requirements
 
  * node: 22
- * [@chubbyts/chubbyts-decode-encode][2]: ^2.5.2
+ * [@chubbyts/chubbyts-decode-encode][2]: ^2.7.0
  * [@chubbyts/chubbyts-dic-config-factory][11]: ^1.0.1
  * [@chubbyts/chubbyts-dic-types][12]: ^2.3.1
  * [@chubbyts/chubbyts-http-error][3]: ^3.5.1
@@ -65,7 +65,7 @@ It ships:
 Through [NPM](https://www.npmjs.com) as [@chubbyts/chubbyts-http-api][1].
 
 ```sh
-npm i @chubbyts/chubbyts-http-api@^1.0.0
+npm i @chubbyts/chubbyts-http-api@^1.1.0
 ```
 
 ## Usage
@@ -185,10 +185,10 @@ const removePet: RemoveModel<InputPetSchema> = async (pet) => {
 | `createDeleteHandler` | –            | `id`                          | `204`   | `404`        |
 
 ```ts
-import { createDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder';
-import { createJsonTypeDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/json-type-decoder';
-import { createEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
-import { createJsonTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/json-type-encoder';
+import { createDecoder } from '@chubbyts/chubbyts-decode-encode/decoder/decoder';
+import { createJsonTypeDecoder } from '@chubbyts/chubbyts-decode-encode/decoder/json-type-decoder';
+import { createEncoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
+import { createJsonTypeEncoder } from '@chubbyts/chubbyts-decode-encode/encoder/json-type-encoder';
 import { createServerRequestFactory } from '@chubbyts/chubbyts-http/message-factory';
 import { createCreateHandler } from '@chubbyts/chubbyts-http-api/handler/create';
 import { createDeleteHandler } from '@chubbyts/chubbyts-http-api/handler/delete';
@@ -364,7 +364,7 @@ The package ships service factories (abstract factories built on [chubbyts-dic-c
 ```ts
 import type { ConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
 import { createContainerByConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
-import { decoderServiceFactory, encoderServiceFactory } from '@chubbyts/chubbyts-decode-encode/dist/service-factory';
+import { decoderServiceFactory, encoderServiceFactory } from '@chubbyts/chubbyts-decode-encode/service-factory';
 import {
   acceptLanguageNegotiationMiddlewareServiceFactory,
   acceptNegotiationMiddlewareServiceFactory,

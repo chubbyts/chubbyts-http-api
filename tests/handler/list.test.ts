@@ -1,4 +1,4 @@
-import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
+import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import type { HttpError } from '@chubbyts/chubbyts-http-error/dist/http-error';
 import { describe, expect, test } from 'vitest';
 import { z } from 'zod';

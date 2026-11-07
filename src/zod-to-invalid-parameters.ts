@@ -1,4 +1,4 @@
-import { isArray, isBoolean, isNull, isNumber, isObject, isString } from '@chubbyts/chubbyts-decode-encode/dist/data';
+import { isArray, isBoolean, isNull, isNumber, isObject, isString } from '@chubbyts/chubbyts-decode-encode/data';
 import type { z } from 'zod';
 
 type InvalidParameter = {

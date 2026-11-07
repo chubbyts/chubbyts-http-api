@@ -1,6 +1,6 @@
 import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { createAbstractFactory } from '@chubbyts/chubbyts-dic-config-factory/dist/dic-config-factory';
-import { encoderServiceFactory } from '@chubbyts/chubbyts-decode-encode/dist/service-factory';
+import { encoderServiceFactory } from '@chubbyts/chubbyts-decode-encode/service-factory';
 import type { Logger } from '@chubbyts/chubbyts-log-types/dist/log';
 import {
   acceptLanguageNegotiatorServiceFactory,

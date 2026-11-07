@@ -1,7 +1,7 @@
 import { STATUS_CODES } from 'node:http';
 import type { HttpError } from '@chubbyts/chubbyts-http-error/dist/http-error';
 import { createInternalServerError, isHttpError } from '@chubbyts/chubbyts-http-error/dist/http-error';
-import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/encoder';
+import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import type { Logger } from '@chubbyts/chubbyts-log-types/dist/log';
 import { createLogger } from '@chubbyts/chubbyts-log-types/dist/log';
 import { throwableToError } from '@chubbyts/chubbyts-throwable-to-error/dist/throwable-to-error';

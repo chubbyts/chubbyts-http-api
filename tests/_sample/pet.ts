@@ -1,6 +1,6 @@
 import { STATUS_CODES } from 'node:http';
-import type { Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder';
-import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
+import type { Decoder } from '@chubbyts/chubbyts-decode-encode/decoder/decoder';
+import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import type { Handler } from '@chubbyts/chubbyts-http-types/handler';
 import { z } from 'zod';
 import { v7 as uuid } from 'uuid';

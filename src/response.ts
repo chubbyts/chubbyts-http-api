@@ -1,7 +1,7 @@
-import type { Data } from '@chubbyts/chubbyts-decode-encode/dist/data';
-import { isObject, isArray, isBoolean, isNumber, isString } from '@chubbyts/chubbyts-decode-encode/dist/data';
-import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/encoder';
-import { EncodeError } from '@chubbyts/chubbyts-decode-encode/dist/encoder/encoder';
+import type { Data } from '@chubbyts/chubbyts-decode-encode/data';
+import { isObject, isArray, isBoolean, isNumber, isString } from '@chubbyts/chubbyts-decode-encode/data';
+import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
+import { EncodeError } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import { isHttpError } from '@chubbyts/chubbyts-http-error/dist/http-error';
 import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/message';
 import type { ResponseFactory, StreamFactory } from '@chubbyts/chubbyts-http-types/message-factory';

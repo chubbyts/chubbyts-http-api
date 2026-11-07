@@ -1,6 +1,6 @@
 import { text } from 'node:stream/consumers';
-import type { Data } from '@chubbyts/chubbyts-decode-encode/dist/data';
-import type { Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/decoder';
+import type { Data } from '@chubbyts/chubbyts-decode-encode/data';
+import type { Decoder } from '@chubbyts/chubbyts-decode-encode/decoder/decoder';
 import type { ServerRequest } from '@chubbyts/chubbyts-http-types/message';
 
 export const parseRequestBody = async (

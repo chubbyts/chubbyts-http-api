@@ -1,10 +1,10 @@
-import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
+import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import { describe, expect, test } from 'vitest';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
 import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
 import type { HttpError } from '@chubbyts/chubbyts-http-error/dist/http-error';
-import type { Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder';
-import type { Data } from '@chubbyts/chubbyts-decode-encode/dist';
+import type { Decoder } from '@chubbyts/chubbyts-decode-encode/decoder/decoder';
+import type { Data } from '@chubbyts/chubbyts-decode-encode/data';
 import { valueToData } from '../../src/response.js';
 import { createServerRequest, readBody } from '../http.js';
 import type {

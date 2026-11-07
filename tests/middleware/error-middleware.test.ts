@@ -1,5 +1,5 @@
-import type { Data } from '@chubbyts/chubbyts-decode-encode/dist';
-import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
+import type { Data } from '@chubbyts/chubbyts-decode-encode/data';
+import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import type { HttpError } from '@chubbyts/chubbyts-http-error/dist/http-error';
 import {
   createImateapot,

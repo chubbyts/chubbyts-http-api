@@ -55,8 +55,8 @@ A pet API with embedded vaccinations. The five handlers below are functionally w
 
 ```ts
 import { STATUS_CODES } from 'node:http';
-import type { Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder';
-import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
+import type { Decoder } from '@chubbyts/chubbyts-decode-encode/decoder/decoder';
+import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import { createResponseFactory, createStreamFactory } from '@chubbyts/chubbyts-http/message-factory';
 import { createResponseHelpers, createServerRequestHelpers } from '@chubbyts/chubbyts-http/message-helper';
 import type { Handler } from '@chubbyts/chubbyts-http-types/handler';

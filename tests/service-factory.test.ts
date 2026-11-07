@@ -4,10 +4,10 @@ import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock
 import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import type { ConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
 import { createContainerByConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
-import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
-import { createEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
-import { createJsonTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/json-type-encoder';
-import { decoderServiceFactory, encoderServiceFactory } from '@chubbyts/chubbyts-decode-encode/dist/service-factory';
+import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
+import { createEncoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
+import { createJsonTypeEncoder } from '@chubbyts/chubbyts-decode-encode/encoder/json-type-encoder';
+import { decoderServiceFactory, encoderServiceFactory } from '@chubbyts/chubbyts-decode-encode/service-factory';
 import type { HttpError } from '@chubbyts/chubbyts-http-error/dist/http-error';
 import { createImateapot, createNotFound } from '@chubbyts/chubbyts-http-error/dist/http-error';
 import type { Logger } from '@chubbyts/chubbyts-log-types/dist/log';
@@ -40,8 +40,14 @@ import {
 const allContentTypes = [
   'application/json',
   'application/jsonx+xml',
+  'application/jsonl',
+  'application/x-jsonl',
+  'text/jsonl',
+  'application/ndjson',
+  'application/x-ndjson',
   'application/x-www-form-urlencoded',
   'application/x-yaml',
+  'application/yaml',
 ];
 
 const createNegotiatorMock = (supportedValues: Array<string>) => {
