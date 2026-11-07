@@ -31,7 +31,7 @@ import {
   responseFactory,
   responseHelpers,
   serverRequestHelpers,
-  streamFactory,
+  bodyFactory,
 } from './http.js';
 
 // the create functions return opaque closures, so the wiring gets proven by exercising the created middlewares against
@@ -314,7 +314,54 @@ describe('errorMiddlewareServiceFactory', () => {
     const [container, containerMocks] = useObjectMock<Container>([
       { name: 'get', parameters: ['config'], return: config },
       { name: 'get', parameters: ['responseFactory'], return: responseFactory },
-      { name: 'get', parameters: ['streamFactory'], return: streamFactory },
+      { name: 'has', parameters: ['bodyFactory'], return: true },
+      { name: 'get', parameters: ['bodyFactory'], return: bodyFactory },
+      { name: 'get', parameters: ['responseHelpers'], return: responseHelpers },
+      { name: 'has', parameters: ['encoder'], return: false },
+      { name: 'has', parameters: ['typeEncoders'], return: false },
+      { name: 'get', parameters: ['config'], return: config },
+      { name: 'has', parameters: ['mapToHttpError'], return: false },
+      { name: 'has', parameters: ['logger'], return: false },
+      { name: 'has', parameters: ['errorMiddlewareLoggableAttributeNames'], return: false },
+    ]);
+
+    const middleware = errorMiddlewareServiceFactory()(container);
+
+    const [handler, handlerMocks] = useFunctionMock<Handler>([
+      {
+        callback: async (): Promise<Response> => {
+          throw new Error('example');
+        },
+      },
+    ]);
+
+    const response = await middleware(
+      createServerRequest('https://example.com/resource', { attributes: { accept: 'application/json' } }),
+      handler,
+    );
+
+    // the shipped encoder factory and the default mapToHttpError get used: a non http error becomes a 500,
+    // without debug the details are hidden
+    expect(response.status).toBe(500);
+    expect(response.headers['content-type']).toEqual(['application/json']);
+    expect(JSON.parse(await readBody(response))).toEqual({
+      type: 'https://datatracker.ietf.org/doc/html/rfc2616#section-10.5.1',
+      status: 500,
+      title: 'Internal Server Error',
+    });
+
+    expect(handlerMocks).toHaveLength(0);
+    expect(containerMocks).toHaveLength(0);
+  });
+
+  test('with defaults, with deprecated streamFactory service', async () => {
+    const config = {};
+
+    const [container, containerMocks] = useObjectMock<Container>([
+      { name: 'get', parameters: ['config'], return: config },
+      { name: 'get', parameters: ['responseFactory'], return: responseFactory },
+      { name: 'has', parameters: ['bodyFactory'], return: false },
+      { name: 'get', parameters: ['streamFactory'], return: bodyFactory },
       { name: 'get', parameters: ['responseHelpers'], return: responseHelpers },
       { name: 'has', parameters: ['encoder'], return: false },
       { name: 'has', parameters: ['typeEncoders'], return: false },
@@ -395,7 +442,8 @@ describe('errorMiddlewareServiceFactory', () => {
     const [container, containerMocks] = useObjectMock<Container>([
       { name: 'get', parameters: ['config'], return: { debug: true } },
       { name: 'get', parameters: ['responseFactory'], return: responseFactory },
-      { name: 'get', parameters: ['streamFactory'], return: streamFactory },
+      { name: 'has', parameters: ['bodyFactory'], return: true },
+      { name: 'get', parameters: ['bodyFactory'], return: bodyFactory },
       { name: 'get', parameters: ['responseHelpers'], return: responseHelpers },
       { name: 'has', parameters: ['encoder'], return: true },
       { name: 'get', parameters: ['encoder'], return: encoder },
@@ -447,7 +495,8 @@ describe('errorMiddlewareServiceFactory', () => {
     const [container, containerMocks] = useObjectMock<Container>([
       { name: 'get', parameters: ['config'], return: { debug: true } },
       { name: 'get', parameters: ['responseFactory'], return: responseFactory },
-      { name: 'get', parameters: ['streamFactory'], return: streamFactory },
+      { name: 'has', parameters: ['bodyFactory'], return: true },
+      { name: 'get', parameters: ['bodyFactory'], return: bodyFactory },
       { name: 'get', parameters: ['responseHelpers'], return: responseHelpers },
       { name: 'has', parameters: ['encoderapi'], return: true },
       { name: 'get', parameters: ['encoderapi'], return: encoder },
@@ -486,7 +535,7 @@ describe('with container by config', () => {
           ['serverRequestHelpers', () => serverRequestHelpers],
           ['responseFactory', () => responseFactory],
           ['responseHelpers', () => responseHelpers],
-          ['streamFactory', () => streamFactory],
+          ['bodyFactory', () => bodyFactory],
           ['decoder', decoderServiceFactory()],
           ['encoder', encoderServiceFactory()],
           ['acceptLanguageNegotiatorSupportedValues', (): Array<string> => ['en', 'de']],
@@ -564,7 +613,7 @@ describe('with container by config', () => {
           ['serverRequestHelpers', () => serverRequestHelpers],
           ['responseFactory', () => responseFactory],
           ['responseHelpers', () => responseHelpers],
-          ['streamFactory', () => streamFactory],
+          ['bodyFactory', () => bodyFactory],
           ['encoderapi', (): Encoder => createEncoder([createJsonTypeEncoder()])],
           ['acceptNegotiatorapi', (): Negotiator => createAcceptNegotiator(['application/x-yaml'])],
           ['acceptNegotiationMiddlewareapi', acceptNegotiationMiddlewareServiceFactory('api')],

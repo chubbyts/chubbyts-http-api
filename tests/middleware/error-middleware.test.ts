@@ -21,7 +21,7 @@ import {
   readBody,
   responseFactory,
   responseHelpers,
-  streamFactory,
+  bodyFactory,
 } from '../http.js';
 
 describe('error-middleware', () => {
@@ -42,7 +42,7 @@ describe('error-middleware', () => {
 
       const [encoder, encoderMocks] = useObjectMock<Encoder>([]);
 
-      const errorMiddleware = createErrorMiddleware({ responseFactory, streamFactory, responseHelpers, encoder });
+      const errorMiddleware = createErrorMiddleware({ responseFactory, bodyFactory, responseHelpers, encoder });
 
       expect(await errorMiddleware(serverRequest, handler)).toBe(response);
 
@@ -72,7 +72,7 @@ describe('error-middleware', () => {
 
       const errorMiddleware = createErrorMiddleware({
         responseFactory,
-        streamFactory,
+        bodyFactory,
         responseHelpers,
         encoder,
         mapToHttpError,
@@ -122,7 +122,7 @@ describe('error-middleware', () => {
         },
       ]);
 
-      const errorMiddleware = createErrorMiddleware({ responseFactory, streamFactory, responseHelpers, encoder });
+      const errorMiddleware = createErrorMiddleware({ responseFactory, bodyFactory, responseHelpers, encoder });
 
       const response = await errorMiddleware(serverRequest, handler);
 
@@ -174,7 +174,7 @@ describe('error-middleware', () => {
         },
       ]);
 
-      const errorMiddleware = createErrorMiddleware({ responseFactory, streamFactory, responseHelpers, encoder });
+      const errorMiddleware = createErrorMiddleware({ responseFactory, bodyFactory, responseHelpers, encoder });
 
       const response = await errorMiddleware(serverRequest, handler);
 
@@ -223,7 +223,7 @@ describe('error-middleware', () => {
         },
       ]);
 
-      const errorMiddleware = createErrorMiddleware({ responseFactory, streamFactory, responseHelpers, encoder });
+      const errorMiddleware = createErrorMiddleware({ responseFactory, bodyFactory, responseHelpers, encoder });
 
       const response = await errorMiddleware(serverRequest, handler);
 
@@ -275,7 +275,7 @@ describe('error-middleware', () => {
         },
       ]);
 
-      const errorMiddleware = createErrorMiddleware({ responseFactory, streamFactory, responseHelpers, encoder });
+      const errorMiddleware = createErrorMiddleware({ responseFactory, bodyFactory, responseHelpers, encoder });
 
       const response = await errorMiddleware(serverRequest, handler);
 
@@ -349,7 +349,7 @@ describe('error-middleware', () => {
 
       const errorMiddleware = createErrorMiddleware({
         responseFactory,
-        streamFactory,
+        bodyFactory,
         responseHelpers,
         encoder,
         mapToHttpError,
@@ -433,7 +433,7 @@ describe('error-middleware', () => {
 
       const errorMiddleware = createErrorMiddleware({
         responseFactory,
-        streamFactory,
+        bodyFactory,
         responseHelpers,
         encoder,
         mapToHttpError,
@@ -550,7 +550,7 @@ describe('error-middleware', () => {
 
       const errorMiddleware = createErrorMiddleware({
         responseFactory,
-        streamFactory,
+        bodyFactory,
         responseHelpers,
         encoder,
         mapToHttpError,
@@ -613,7 +613,7 @@ describe('error-middleware', () => {
         },
       ]);
 
-      const errorMiddleware = createErrorMiddleware({ responseFactory, streamFactory, responseHelpers, encoder });
+      const errorMiddleware = createErrorMiddleware({ responseFactory, bodyFactory, responseHelpers, encoder });
 
       const response = await errorMiddleware(serverRequest, handler);
 
@@ -643,7 +643,7 @@ describe('error-middleware', () => {
 
       const [encoder, encoderMocks] = useObjectMock<Encoder>([{ name: 'contentTypes', value: [] }]);
 
-      const errorMiddleware = createErrorMiddleware({ responseFactory, streamFactory, responseHelpers, encoder });
+      const errorMiddleware = createErrorMiddleware({ responseFactory, bodyFactory, responseHelpers, encoder });
 
       await expect(errorMiddleware(serverRequest, handler)).rejects.toBe(httpError);
 

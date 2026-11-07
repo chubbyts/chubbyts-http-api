@@ -24,12 +24,12 @@ import {
   sortSchema,
   stringSchema,
 } from '../../src/model.js';
-import { responseFactory, responseHelpers, serverRequestHelpers, streamFactory } from '../http.js';
+import { responseFactory, responseHelpers, serverRequestHelpers, bodyFactory } from '../http.js';
 
 // the implementation of @chubbyts/chubbyts-http-types the handlers get created with
 const implementation = { serverRequestHelpers, responseFactory, responseHelpers };
 
-const implementationWithStreamFactory = { ...implementation, streamFactory };
+const implementationWithBodyFactory = { ...implementation, bodyFactory };
 
 const inputVaccinationSchema = z.object({ name: stringSchema });
 
@@ -135,7 +135,7 @@ export const createPetListHandler = (
       };
     },
     encoder,
-    ...implementationWithStreamFactory,
+    ...implementationWithBodyFactory,
   });
 };
 
@@ -165,7 +165,7 @@ export const createPetCreateHandler = (
     },
     decoder,
     encoder,
-    ...implementationWithStreamFactory,
+    ...implementationWithBodyFactory,
   });
 };
 
@@ -193,7 +193,7 @@ export const createPetReadHandler = (findPetById: FindPetById, enrichPet: Enrich
       };
     },
     encoder,
-    ...implementationWithStreamFactory,
+    ...implementationWithBodyFactory,
   });
 };
 
@@ -236,7 +236,7 @@ export const createPetUpdateHandler = (
     },
     decoder,
     encoder,
-    ...implementationWithStreamFactory,
+    ...implementationWithBodyFactory,
   });
 };
 

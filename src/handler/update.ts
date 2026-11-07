@@ -4,17 +4,18 @@ import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import type { Decoder } from '@chubbyts/chubbyts-decode-encode/decoder/decoder';
 import { z } from 'zod';
 import type { Handler } from '@chubbyts/chubbyts-http-types/handler';
-import type { ResponseFactory, StreamFactory } from '@chubbyts/chubbyts-http-types/message-factory';
+import type { ResponseFactory } from '@chubbyts/chubbyts-http-types/message-factory';
 import type { ResponseHelpers, ServerRequestHelpers } from '@chubbyts/chubbyts-http-types/message-helper';
 import type { FindModelById, PersistModel } from '../repository.js';
 import type { EmbeddedSchema, EnrichedModel, EnrichModel, EnrichedModelSchema, InputModelSchema } from '../model.js';
+import type { BodyFactoryConfig, StreamFactoryConfig } from '../response.js';
+import { resolveBodyFactory } from '../response.js';
 import { createTypedHandler } from './typed.js';
 
-export type UpdateHandlerConfig<IMS extends InputModelSchema, EMS extends EmbeddedSchema = EmbeddedSchema> = {
+type UpdateHandlerBaseConfig<IMS extends InputModelSchema, EMS extends EmbeddedSchema = EmbeddedSchema> = {
   serverRequestHelpers: ServerRequestHelpers;
   responseFactory: ResponseFactory;
   responseHelpers: ResponseHelpers;
-  streamFactory: StreamFactory;
   findModelById: FindModelById<IMS>;
   decoder: Decoder;
   inputModelSchema: IMS;
@@ -24,24 +25,38 @@ export type UpdateHandlerConfig<IMS extends InputModelSchema, EMS extends Embedd
   enrichModel?: EnrichModel<IMS, EMS>;
 };
 
-export const createUpdateHandler = <IMS extends InputModelSchema, EMS extends EmbeddedSchema = EmbeddedSchema>({
-  serverRequestHelpers,
-  responseFactory,
-  responseHelpers,
-  streamFactory,
-  findModelById,
-  decoder,
-  inputModelSchema,
-  persistModel,
-  enrichedModelSchema,
-  encoder,
-  enrichModel = (model) => Promise.resolve(model as EnrichedModel<IMS, EMS>),
-}: UpdateHandlerConfig<IMS, EMS>): Handler => {
+/** With the body factory under its deprecated name `streamFactory`, see `UpdateHandlerBodyFactoryConfig`. */
+export type UpdateHandlerConfig<
+  IMS extends InputModelSchema,
+  EMS extends EmbeddedSchema = EmbeddedSchema,
+> = UpdateHandlerBaseConfig<IMS, EMS> & StreamFactoryConfig;
+
+export type UpdateHandlerBodyFactoryConfig<
+  IMS extends InputModelSchema,
+  EMS extends EmbeddedSchema = EmbeddedSchema,
+> = UpdateHandlerBaseConfig<IMS, EMS> & BodyFactoryConfig;
+
+export const createUpdateHandler = <IMS extends InputModelSchema, EMS extends EmbeddedSchema = EmbeddedSchema>(
+  config: UpdateHandlerBodyFactoryConfig<IMS, EMS> | UpdateHandlerConfig<IMS, EMS>,
+): Handler => {
+  const {
+    serverRequestHelpers,
+    responseFactory,
+    responseHelpers,
+    findModelById,
+    decoder,
+    inputModelSchema,
+    persistModel,
+    enrichedModelSchema,
+    encoder,
+    enrichModel = (model) => Promise.resolve(model as EnrichedModel<IMS, EMS>),
+  } = config;
+
   return createTypedHandler({
     serverRequestHelpers,
     responseFactory,
     responseHelpers,
-    streamFactory,
+    bodyFactory: resolveBodyFactory(config),
     request: {
       attributes: z.object({ contentType: z.string(), accept: z.string(), id: z.string() }),
       body: inputModelSchema,

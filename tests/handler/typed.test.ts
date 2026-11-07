@@ -12,7 +12,7 @@ import {
   responseFactory,
   responseHelpers,
   serverRequestHelpers,
-  streamFactory,
+  bodyFactory,
 } from '../http.js';
 import { createTypedHandler } from '../../src/handler/typed.js';
 import { valueToData } from '../../src/response.js';
@@ -37,7 +37,7 @@ describe('createTypedHandler', () => {
       serverRequestHelpers,
       responseFactory,
       responseHelpers,
-      streamFactory,
+      bodyFactory,
       request: {
         attributes: z.object({ contentType: z.string(), accept: z.string(), subject: z.string() }),
         headers: z.object({ 'x-request-id': z.string() }),
@@ -193,7 +193,7 @@ describe('createTypedHandler', () => {
       serverRequestHelpers,
       responseFactory,
       responseHelpers,
-      streamFactory,
+      bodyFactory,
       request: {
         attributes: z.object({ accept: z.string(), subject: z.string() }),
       },
@@ -238,7 +238,7 @@ describe('createTypedHandler', () => {
       serverRequestHelpers,
       responseFactory,
       responseHelpers,
-      streamFactory,
+      bodyFactory,
       request: {
         attributes: z.object({ accept: z.string(), subject: z.string() }),
       },
@@ -356,7 +356,7 @@ describe('createTypedHandler', () => {
       serverRequestHelpers,
       responseFactory,
       responseHelpers,
-      streamFactory,
+      bodyFactory,
       request: {
         attributes: z.object({ accept: z.string() }),
         body: z.object({ name: z.string() }),
@@ -399,7 +399,7 @@ describe('createTypedHandler', () => {
       serverRequestHelpers,
       responseFactory,
       responseHelpers,
-      streamFactory,
+      bodyFactory,
       request: {
         attributes: z.object({ accept: z.string() }),
         body: undefined,
@@ -440,7 +440,7 @@ describe('createTypedHandler', () => {
       serverRequestHelpers,
       responseFactory,
       responseHelpers,
-      streamFactory,
+      bodyFactory,
       request: {
         attributes: z.object({ contentType: z.string() }),
         body: z.object({ name: z.string() }),
@@ -483,7 +483,7 @@ describe('createTypedHandler', () => {
       serverRequestHelpers,
       responseFactory,
       responseHelpers,
-      streamFactory,
+      bodyFactory,
       request: {
         attributes: z.object({ contentType: z.string() }),
         body: z.object({ name: z.string() }),
@@ -518,7 +518,7 @@ describe('createTypedHandler', () => {
       serverRequestHelpers,
       responseFactory,
       responseHelpers,
-      streamFactory,
+      bodyFactory,
       request: {
         attributes: z.object({ subject: z.string() }),
         body: z.object({ name: z.string() }),
@@ -547,7 +547,7 @@ describe('createTypedHandler', () => {
       serverRequestHelpers,
       responseFactory,
       responseHelpers,
-      streamFactory,
+      bodyFactory,
       request: {
         attributes: z.object({ subject: z.string() }),
       },
@@ -580,7 +580,7 @@ describe('createTypedHandler', () => {
       serverRequestHelpers,
       responseFactory,
       responseHelpers,
-      streamFactory,
+      bodyFactory,
       request: {
         attributes: z.object({ subject: z.string() }),
       },

@@ -23,17 +23,19 @@ Type-safe CRUD handlers and middlewares for [@chubbyts/chubbyts-http-types][7].
 
 They work with any implementation of the types (e.g. [@chubbyts/chubbyts-http][8]): the request gets read (headers,
 query params, attributes), and the request and response get created and changed through the injected factories and
-helpers only. The examples below use `serverRequestHelpers`, `responseFactory`, `responseHelpers` and `streamFactory`
-of such an implementation:
+helpers only. The examples below use `serverRequestHelpers`, `responseFactory`, `responseHelpers` and `bodyFactory`
+of such an implementation (`streamFactory` is still accepted as deprecated alias of `bodyFactory`, if both are given
+`bodyFactory` wins). The config types keep their `streamFactory` shape, the ones with `bodyFactory` are named
+`…BodyFactoryConfig` (e.g. `ErrorMiddlewareConfig` → `ErrorMiddlewareBodyFactoryConfig`):
 
 ```ts
-import { createResponseFactory, createStreamFactory } from '@chubbyts/chubbyts-http/message-factory';
+import { createResponseFactory, createBodyFactory } from '@chubbyts/chubbyts-http/message-factory';
 import { createResponseHelpers, createServerRequestHelpers } from '@chubbyts/chubbyts-http/message-helper';
 
 const serverRequestHelpers = createServerRequestHelpers();
 const responseFactory = createResponseFactory();
 const responseHelpers = createResponseHelpers();
-const streamFactory = createStreamFactory();
+const bodyFactory = createBodyFactory();
 ```
 
 You describe a model once as a [zod][10] schema. The package derives the list, persisted and enriched (HAL style `_embedded` / `_links`) variants from it, validates incoming attributes, query, headers and body against them, and encodes the response in the content type negotiated with the client.
@@ -65,7 +67,7 @@ It ships:
 Through [NPM](https://www.npmjs.com) as [@chubbyts/chubbyts-http-api][1].
 
 ```sh
-npm i @chubbyts/chubbyts-http-api@^1.1.0
+npm i @chubbyts/chubbyts-http-api@^1.2.0
 ```
 
 ## Usage
@@ -199,8 +201,8 @@ import { createUpdateHandler } from '@chubbyts/chubbyts-http-api/handler/update'
 const decoder = createDecoder([createJsonTypeDecoder()]);
 const encoder = createEncoder([createJsonTypeEncoder()]);
 
-// the implementation of @chubbyts/chubbyts-http-types, handlers with an encoder need the stream factory too
-const http = { serverRequestHelpers, responseFactory, responseHelpers, streamFactory };
+// the implementation of @chubbyts/chubbyts-http-types, handlers with an encoder need the body factory too
+const http = { serverRequestHelpers, responseFactory, responseHelpers, bodyFactory };
 
 const listHandler = createListHandler({
   ...http,
@@ -332,7 +334,7 @@ import { createErrorMiddleware } from '@chubbyts/chubbyts-http-api/middleware/er
 
 const errorMiddleware = createErrorMiddleware({
   responseFactory,
-  streamFactory,
+  bodyFactory, // or the deprecated streamFactory
   responseHelpers,
   encoder,
   // all of the following are optional
@@ -352,14 +354,15 @@ const errorMiddleware = createErrorMiddleware({
 ### Helpers
 
  * `parseRequestBody(decoder, serverRequest)` from `request`: decodes the body using `attributes.contentType`.
- * `createResponseWithData({ responseFactory, streamFactory, responseHelpers, serverRequest, encoder, data, status, reasonPhrase?, headers? })` from `response`: encodes `data` using `attributes.accept` and sets the `content-type` header.
+ * `createResponseWithData({ responseFactory, bodyFactory, responseHelpers, serverRequest, encoder, data, status, reasonPhrase?, headers? })` from `response`: encodes `data` using `attributes.accept` and sets the `content-type` header (`streamFactory` is accepted as deprecated alias of `bodyFactory`).
+ * `resolveBodyFactory(config)` from `response`: returns `bodyFactory` of a `BodyFactoryConfig`, or `streamFactory` of a `StreamFactoryConfig`.
  * `withHeaders(responseHelpers, response, headers)` from `response`: sets multiple headers through `withHeader`.
  * `valueToData(value)` from `response`: converts models (dates, http-errors, nested objects) into encodable data.
  * `zodToInvalidParameters(zodError)` from `zod-to-invalid-parameters`: maps zod issues to the `invalidParameters` format used by [http-error][3].
 
 ### Service factories (chubbyts-dic-config)
 
-The package ships service factories (abstract factories built on [chubbyts-dic-config-factory][11]) for a [chubbyts-dic-config][13] (or any [chubbyts-dic-types][12] compatible) container within `@chubbyts/chubbyts-http-api/service-factory`, one per middleware. They reuse the service factories of [chubbyts-decode-encode][2] and [chubbyts-negotiation][5]. The implementation of the types gets read from the services `serverRequestHelpers` (negotiation middlewares), `responseFactory`, `streamFactory` and `responseHelpers` (error middleware), which have to be registered:
+The package ships service factories (abstract factories built on [chubbyts-dic-config-factory][11]) for a [chubbyts-dic-config][13] (or any [chubbyts-dic-types][12] compatible) container within `@chubbyts/chubbyts-http-api/service-factory`, one per middleware. They reuse the service factories of [chubbyts-decode-encode][2] and [chubbyts-negotiation][5]. The implementation of the types gets read from the services `serverRequestHelpers` (negotiation middlewares), `responseFactory`, `bodyFactory` and `responseHelpers` (error middleware), which have to be registered (if there is no `bodyFactory` service, the deprecated `streamFactory` service is used):
 
 ```ts
 import type { ConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
@@ -380,7 +383,7 @@ const container = createContainerByConfigFactory({
       ['serverRequestHelpers', () => createServerRequestHelpers()],
       ['responseFactory', () => createResponseFactory()],
       ['responseHelpers', () => createResponseHelpers()],
-      ['streamFactory', () => createStreamFactory()],
+      ['bodyFactory', () => createBodyFactory()],
       ['decoder', decoderServiceFactory()],
       ['encoder', encoderServiceFactory()],
       ['acceptLanguageNegotiatorSupportedValues', (): Array<string> => ['en', 'de']],
@@ -419,7 +422,7 @@ import type { MapToHttpError } from '@chubbyts/chubbyts-http-api/middleware/erro
 const container = createContainerByConfigFactory({
   dependencies: {
     factories: new Map<string, ConfigFactory>([
-      // serverRequestHelpers, responseFactory, responseHelpers and streamFactory like above
+      // serverRequestHelpers, responseFactory, responseHelpers and bodyFactory like above
       ['encoderapi', encoderServiceFactory('api')],
       ['mapToHttpErrorapi', (): MapToHttpError => (e: unknown): HttpError => createInternalServerError({ cause: e })],
       ['errorMiddlewareapi', errorMiddlewareServiceFactory('api')],

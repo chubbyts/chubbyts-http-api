@@ -2,7 +2,7 @@ import { text } from 'node:stream/consumers';
 import {
   createResponseFactory,
   createServerRequestFactory,
-  createStreamFactory,
+  createBodyFactory,
 } from '@chubbyts/chubbyts-http/message-factory';
 import { createResponseHelpers, createServerRequestHelpers } from '@chubbyts/chubbyts-http/message-helper';
 import type { Attributes, Response, ServerRequest } from '@chubbyts/chubbyts-http-types/message';
@@ -13,7 +13,7 @@ export const serverRequestFactory = createServerRequestFactory();
 export const serverRequestHelpers = createServerRequestHelpers();
 export const responseFactory = createResponseFactory();
 export const responseHelpers = createResponseHelpers();
-export const streamFactory = createStreamFactory();
+export const bodyFactory = createBodyFactory();
 
 export const createServerRequest = <A extends Attributes = Attributes>(
   uri: string,
@@ -30,7 +30,7 @@ export const createServerRequest = <A extends Attributes = Attributes>(
   );
 
   const serverRequestWithBody =
-    body !== undefined ? serverRequestHelpers.withBody(serverRequest, streamFactory(body)) : serverRequest;
+    body !== undefined ? serverRequestHelpers.withBody(serverRequest, bodyFactory(body)) : serverRequest;
 
   return { ...serverRequestWithBody, attributes };
 };
@@ -44,7 +44,7 @@ export const createResponse = (
     responseFactory(status),
   );
 
-  return body !== undefined ? responseHelpers.withBody(response, streamFactory(body)) : response;
+  return body !== undefined ? responseHelpers.withBody(response, bodyFactory(body)) : response;
 };
 
 export const readBody = (message: { body: AsyncIterable<Uint8Array> }): Promise<string> => text(message.body);

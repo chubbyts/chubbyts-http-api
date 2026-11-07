@@ -5,11 +5,12 @@ import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import { createBadRequest } from '@chubbyts/chubbyts-http-error/dist/http-error';
 import type { Handler } from '@chubbyts/chubbyts-http-types/handler';
 import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/message';
-import type { ResponseFactory, StreamFactory } from '@chubbyts/chubbyts-http-types/message-factory';
+import type { ResponseFactory } from '@chubbyts/chubbyts-http-types/message-factory';
 import type { ResponseHelpers, ServerRequestHelpers } from '@chubbyts/chubbyts-http-types/message-helper';
 import type { z } from 'zod';
 import { zodToInvalidParameters } from '../zod-to-invalid-parameters.js';
-import { valueToData, withHeaders } from '../response.js';
+import type { BodyFactoryConfig, StreamFactoryConfig } from '../response.js';
+import { resolveBodyFactory, valueToData, withHeaders } from '../response.js';
 
 type ObjectSchema = z.ZodType<{ [key: string]: unknown }>;
 
@@ -29,9 +30,8 @@ type Implementation = {
   responseHelpers: ResponseHelpers;
 };
 
-type ImplementationWithStreamFactory = Implementation & {
-  streamFactory: StreamFactory;
-};
+// the body factory, or the deprecated stream factory
+type FactoryConfig = BodyFactoryConfig | StreamFactoryConfig;
 
 type ResponseOutput<S> = S extends z.ZodType ? z.output<S> : { [key: string]: never };
 
@@ -107,6 +107,7 @@ type WithRequestAndResponse<
   RequestBodySchema extends ObjectSchema,
   ResponseHeadersSchema extends HeadersSchema | undefined,
   ResponseBodySchema extends ObjectSchema,
+  Factory extends FactoryConfig = FactoryConfig,
 > = {
   request: RequestWithBodySchema<RequestAttributesSchema, RequestHeadersSchema, RequestQuerySchema, RequestBodySchema>;
   response: ResponseWithBodySchema<ResponseHeadersSchema, ResponseBodySchema>;
@@ -120,7 +121,8 @@ type WithRequestAndResponse<
   ) => HandlerResponseWithBody<ResponseHeadersSchema, z.output<ResponseBodySchema>>;
   decoder: Decoder;
   encoder: Encoder;
-} & ImplementationWithStreamFactory;
+} & Implementation &
+  Factory;
 
 type WithRequestOnly<
   RequestAttributesSchema extends ContentTypeAttributesSchema,
@@ -148,6 +150,7 @@ type WithResponseOnly<
   RequestQuerySchema extends ObjectSchema | undefined,
   ResponseHeadersSchema extends HeadersSchema | undefined,
   ResponseBodySchema extends ObjectSchema,
+  Factory extends FactoryConfig = FactoryConfig,
 > = {
   request: RequestSchema<RequestAttributesSchema, RequestHeadersSchema, RequestQuerySchema>;
   response: ResponseWithBodySchema<ResponseHeadersSchema, ResponseBodySchema>;
@@ -155,7 +158,8 @@ type WithResponseOnly<
     request: HandlerRequest<RequestAttributesSchema, RequestHeadersSchema, RequestQuerySchema>,
   ) => HandlerResponseWithBody<ResponseHeadersSchema, z.output<ResponseBodySchema>>;
   encoder: Encoder;
-} & ImplementationWithStreamFactory;
+} & Implementation &
+  Factory;
 
 type WithNeither<
   RequestAttributesSchema extends ObjectSchema,
@@ -170,7 +174,8 @@ type WithNeither<
   ) => HandlerResponse<ResponseHeadersSchema, undefined>;
 } & Implementation;
 
-export type TypedHandlerConfig<
+type TypedHandlerFactoryConfig<
+  Factory extends FactoryConfig,
   RequestAttributesSchema extends ObjectSchema | undefined,
   RequestHeadersSchema extends HeadersSchema | undefined,
   RequestQuerySchema extends ObjectSchema | undefined,
@@ -186,7 +191,8 @@ export type TypedHandlerConfig<
           RequestQuerySchema,
           RequestBodySchema,
           ResponseHeadersSchema,
-          ResponseBodySchema
+          ResponseBodySchema,
+          Factory
         >
       : never
     : never
@@ -210,7 +216,8 @@ export type TypedHandlerConfig<
               RequestHeadersSchema,
               RequestQuerySchema,
               ResponseHeadersSchema,
-              ResponseBodySchema
+              ResponseBodySchema,
+              Factory
             >
           : never
         : never
@@ -221,6 +228,41 @@ export type TypedHandlerConfig<
             : never
           : never
         : never;
+
+/** With the body factory under its deprecated name `streamFactory`, see `TypedHandlerBodyFactoryConfig`. */
+export type TypedHandlerConfig<
+  RequestAttributesSchema extends ObjectSchema | undefined,
+  RequestHeadersSchema extends HeadersSchema | undefined,
+  RequestQuerySchema extends ObjectSchema | undefined,
+  RequestBodySchema extends ObjectSchema | undefined,
+  ResponseHeadersSchema extends HeadersSchema | undefined,
+  ResponseBodySchema extends ObjectSchema | undefined,
+> = TypedHandlerFactoryConfig<
+  StreamFactoryConfig,
+  RequestAttributesSchema,
+  RequestHeadersSchema,
+  RequestQuerySchema,
+  RequestBodySchema,
+  ResponseHeadersSchema,
+  ResponseBodySchema
+>;
+
+export type TypedHandlerBodyFactoryConfig<
+  RequestAttributesSchema extends ObjectSchema | undefined,
+  RequestHeadersSchema extends HeadersSchema | undefined,
+  RequestQuerySchema extends ObjectSchema | undefined,
+  RequestBodySchema extends ObjectSchema | undefined,
+  ResponseHeadersSchema extends HeadersSchema | undefined,
+  ResponseBodySchema extends ObjectSchema | undefined,
+> = TypedHandlerFactoryConfig<
+  BodyFactoryConfig,
+  RequestAttributesSchema,
+  RequestHeadersSchema,
+  RequestQuerySchema,
+  RequestBodySchema,
+  ResponseHeadersSchema,
+  ResponseBodySchema
+>;
 
 const resolveRequestHeaders = (
   serverRequestHelpers: ServerRequestHelpers,
@@ -313,14 +355,14 @@ const createResponse = (
   );
 
 const createResponseWithBody = (
-  implementation: ImplementationWithStreamFactory,
+  implementation: Implementation & FactoryConfig,
   typedResponse: { status: number; reasonPhrase?: string },
   headers: Record<string, string>,
   body: string,
 ): Response =>
   implementation.responseHelpers.withBody(
     createResponse(implementation, typedResponse, headers),
-    implementation.streamFactory(body),
+    resolveBodyFactory(implementation)(body),
   );
 
 export function createTypedHandler<
@@ -384,7 +426,8 @@ export function createTypedHandler<
   ResponseHeadersSchema extends HeadersSchema | undefined,
   ResponseBodySchema extends ObjectSchema | undefined,
 >(
-  _: TypedHandlerConfig<
+  _: TypedHandlerFactoryConfig<
+    FactoryConfig,
     RequestAttributesSchema,
     RequestHeadersSchema,
     RequestQuerySchema,

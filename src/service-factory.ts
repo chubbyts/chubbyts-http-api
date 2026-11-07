@@ -7,7 +7,7 @@ import {
   acceptNegotiatorServiceFactory,
   contentTypeNegotiatorServiceFactory,
 } from '@chubbyts/chubbyts-negotiation/dist/service-factory';
-import type { ResponseFactory, StreamFactory } from '@chubbyts/chubbyts-http-types/message-factory';
+import type { ResponseFactory, BodyFactory } from '@chubbyts/chubbyts-http-types/message-factory';
 import type { ResponseHelpers, ServerRequestHelpers } from '@chubbyts/chubbyts-http-types/message-helper';
 import type { Middleware } from '@chubbyts/chubbyts-http-types/middleware';
 import { createAcceptLanguageNegotiationMiddleware } from './middleware/accept-language-negotiation-middleware.js';
@@ -24,7 +24,15 @@ type Config = {
 const serverRequestHelpersId = 'serverRequestHelpers';
 const responseFactoryId = 'responseFactory';
 const responseHelpersId = 'responseHelpers';
+const bodyFactoryId = 'bodyFactory';
+// the deprecated id of the body factory service, used as fallback if there is no `bodyFactory` service
 const streamFactoryId = 'streamFactory';
+
+const resolveBodyFactory = (container: Container): BodyFactory => {
+  const id = container.has(bodyFactoryId) ? bodyFactoryId : streamFactoryId;
+
+  return container.get<BodyFactory>(id);
+};
 
 // a registered service wins over the shipped factory, so that any part can be replaced or shared between services
 
@@ -75,7 +83,7 @@ export const errorMiddlewareServiceFactory = createAbstractFactory(
 
     return createErrorMiddleware({
       responseFactory: container.get<ResponseFactory>(responseFactoryId),
-      streamFactory: container.get<StreamFactory>(streamFactoryId),
+      bodyFactory: resolveBodyFactory(container),
       responseHelpers: container.get<ResponseHelpers>(responseHelpersId),
       encoder: resolveDependency(container, 'encoder', encoderServiceFactory),
       mapToHttpError: resolveDependency(container, 'mapToHttpError', mapToHttpErrorServiceFactory),

@@ -27,7 +27,7 @@ const handler = createTypedHandler({
   serverRequestHelpers, // required: reads the request headers and query params
   responseFactory,      // required: creates the response
   responseHelpers,      // required: sets the response headers and body
-  streamFactory,        // required when response.body is set: creates the response body
+  bodyFactory,          // required when response.body is set: creates the response body (or the deprecated streamFactory)
 });
 ```
 
@@ -36,7 +36,7 @@ Per request it:
  1. Parses `serverRequest.attributes` with `request.attributes`.
  2. Parses the request headers (multiple values joined with `, `), the query params (parsed by the implementation through `getQueryParams`) and the decoded body with the given schemas. Each failure throws a `400 Bad Request` with `invalidParameters` and a `context` of `headers`, `query` or `body`; a body the decoder can not parse throws a `400 Bad Request` with `context` `body` and the decoder message as `detail`.
  3. Calls your `handler` with the fully typed values.
- 4. Parses the returned `headers` and `body` with the response schemas, encodes the body with the negotiated `accept` content type and returns a `Response`, created through the injected `responseFactory`, `responseHelpers` and `streamFactory`.
+ 4. Parses the returned `headers` and `body` with the response schemas, encodes the body with the negotiated `accept` content type and returns a `Response`, created through the injected `responseFactory`, `responseHelpers` and `bodyFactory`.
 
 Which shape you get is determined by the presence of `request.body` and `response.body`. The attributes schema has to include what the variant needs:
 
@@ -57,7 +57,7 @@ A pet API with embedded vaccinations. The five handlers below are functionally w
 import { STATUS_CODES } from 'node:http';
 import type { Decoder } from '@chubbyts/chubbyts-decode-encode/decoder/decoder';
 import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
-import { createResponseFactory, createStreamFactory } from '@chubbyts/chubbyts-http/message-factory';
+import { createResponseFactory, createBodyFactory } from '@chubbyts/chubbyts-http/message-factory';
 import { createResponseHelpers, createServerRequestHelpers } from '@chubbyts/chubbyts-http/message-helper';
 import type { Handler } from '@chubbyts/chubbyts-http-types/handler';
 import { z } from 'zod';
@@ -177,7 +177,7 @@ const http = {
   serverRequestHelpers: createServerRequestHelpers(),
   responseFactory: createResponseFactory(),
   responseHelpers: createResponseHelpers(),
-  streamFactory: createStreamFactory(),
+  bodyFactory: createBodyFactory(),
 };
 
 // handlers

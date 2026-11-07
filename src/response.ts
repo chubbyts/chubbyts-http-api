@@ -4,7 +4,7 @@ import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import { EncodeError } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import { isHttpError } from '@chubbyts/chubbyts-http-error/dist/http-error';
 import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/message';
-import type { ResponseFactory, StreamFactory } from '@chubbyts/chubbyts-http-types/message-factory';
+import type { ResponseFactory, BodyFactory } from '@chubbyts/chubbyts-http-types/message-factory';
 import type { ResponseHelpers } from '@chubbyts/chubbyts-http-types/message-helper';
 
 export const valueToData = (value: unknown): Data => {
@@ -39,9 +39,28 @@ export const withHeaders = (
     response,
   );
 
-export type ResponseWithDataConfig = {
+/**
+ * The body factory of the http-types implementation, if the deprecated `streamFactory` is given too `bodyFactory`
+ * wins.
+ */
+export type BodyFactoryConfig = {
+  bodyFactory: BodyFactory;
+  /** @deprecated use `bodyFactory`, the body is not a stream anymore */
+  streamFactory?: BodyFactory;
+};
+
+/** The body factory of the http-types implementation under its deprecated name `streamFactory`. */
+export type StreamFactoryConfig = {
+  /** @deprecated use `bodyFactory`, the body is not a stream anymore */
+  streamFactory: BodyFactory;
+};
+
+export const resolveBodyFactory = (
+  config: BodyFactoryConfig | (StreamFactoryConfig & { bodyFactory?: undefined }),
+): BodyFactory => config.bodyFactory ?? config.streamFactory;
+
+type ResponseWithDataBaseConfig = {
   responseFactory: ResponseFactory;
-  streamFactory: StreamFactory;
   responseHelpers: ResponseHelpers;
   serverRequest: ServerRequest<{ readonly accept?: string }>;
   encoder: Encoder;
@@ -51,17 +70,15 @@ export type ResponseWithDataConfig = {
   headers?: Record<string, string>;
 };
 
-export const createResponseWithData = ({
-  responseFactory,
-  streamFactory,
-  responseHelpers,
-  serverRequest,
-  encoder,
-  data,
-  status,
-  reasonPhrase,
-  headers = {},
-}: ResponseWithDataConfig): Response => {
+/** With the body factory under its deprecated name `streamFactory`, see `ResponseWithDataBodyFactoryConfig`. */
+export type ResponseWithDataConfig = ResponseWithDataBaseConfig & StreamFactoryConfig;
+
+export type ResponseWithDataBodyFactoryConfig = ResponseWithDataBaseConfig & BodyFactoryConfig;
+
+export const createResponseWithData = (
+  config: ResponseWithDataBodyFactoryConfig | ResponseWithDataConfig,
+): Response => {
+  const { responseFactory, responseHelpers, serverRequest, encoder, data, status, reasonPhrase, headers = {} } = config;
   const { accept } = serverRequest.attributes;
 
   if (!accept) {
@@ -71,6 +88,6 @@ export const createResponseWithData = ({
   // created and changed through the injected implementation only: works with any of them
   return responseHelpers.withBody(
     withHeaders(responseHelpers, responseFactory(status, reasonPhrase), { ...headers, 'content-type': accept }),
-    streamFactory(encoder.encode(data, accept, { serverRequest })),
+    resolveBodyFactory(config)(encoder.encode(data, accept, { serverRequest })),
   );
 };

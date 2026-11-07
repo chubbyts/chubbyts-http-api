@@ -10,7 +10,7 @@ import {
   responseFactory,
   responseHelpers,
   serverRequestHelpers,
-  streamFactory,
+  bodyFactory,
 } from '../http.js';
 import { createReadHandler } from '../../src/handler/read.js';
 import { createEnrichedModelSchema, stringSchema, type EnrichModel, type Model } from '../../src/model.js';
@@ -89,7 +89,7 @@ describe('read', () => {
         serverRequestHelpers,
         responseFactory,
         responseHelpers,
-        streamFactory,
+        bodyFactory,
         findModelById,
         enrichedModelSchema,
         encoder,
@@ -169,7 +169,7 @@ describe('read', () => {
         serverRequestHelpers,
         responseFactory,
         responseHelpers,
-        streamFactory,
+        bodyFactory,
         findModelById,
         enrichedModelSchema,
         encoder,
@@ -215,7 +215,7 @@ describe('read', () => {
         serverRequestHelpers,
         responseFactory,
         responseHelpers,
-        streamFactory,
+        bodyFactory,
         findModelById,
         enrichedModelSchema,
         encoder,

@@ -3,18 +3,19 @@ import { v7 } from 'uuid';
 import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import type { Decoder } from '@chubbyts/chubbyts-decode-encode/decoder/decoder';
 import type { Handler } from '@chubbyts/chubbyts-http-types/handler';
-import type { ResponseFactory, StreamFactory } from '@chubbyts/chubbyts-http-types/message-factory';
+import type { ResponseFactory } from '@chubbyts/chubbyts-http-types/message-factory';
 import type { ResponseHelpers, ServerRequestHelpers } from '@chubbyts/chubbyts-http-types/message-helper';
 import { z } from 'zod';
 import type { PersistModel } from '../repository.js';
 import type { EmbeddedSchema, EnrichedModel, EnrichedModelSchema, EnrichModel, InputModelSchema } from '../model.js';
+import type { BodyFactoryConfig, StreamFactoryConfig } from '../response.js';
+import { resolveBodyFactory } from '../response.js';
 import { createTypedHandler } from './typed.js';
 
-export type CreateHandlerConfig<IMS extends InputModelSchema, EMS extends EmbeddedSchema = EmbeddedSchema> = {
+type CreateHandlerBaseConfig<IMS extends InputModelSchema, EMS extends EmbeddedSchema = EmbeddedSchema> = {
   serverRequestHelpers: ServerRequestHelpers;
   responseFactory: ResponseFactory;
   responseHelpers: ResponseHelpers;
-  streamFactory: StreamFactory;
   decoder: Decoder;
   inputModelSchema: IMS;
   persistModel: PersistModel<IMS>;
@@ -24,24 +25,38 @@ export type CreateHandlerConfig<IMS extends InputModelSchema, EMS extends Embedd
   uuid?: () => string;
 };
 
-export const createCreateHandler = <IMS extends InputModelSchema, EMS extends EmbeddedSchema = EmbeddedSchema>({
-  serverRequestHelpers,
-  responseFactory,
-  responseHelpers,
-  streamFactory,
-  decoder,
-  inputModelSchema,
-  persistModel,
-  enrichedModelSchema,
-  encoder,
-  enrichModel = (model) => Promise.resolve(model as EnrichedModel<IMS, EMS>),
-  uuid = v7,
-}: CreateHandlerConfig<IMS, EMS>): Handler => {
+/** With the body factory under its deprecated name `streamFactory`, see `CreateHandlerBodyFactoryConfig`. */
+export type CreateHandlerConfig<
+  IMS extends InputModelSchema,
+  EMS extends EmbeddedSchema = EmbeddedSchema,
+> = CreateHandlerBaseConfig<IMS, EMS> & StreamFactoryConfig;
+
+export type CreateHandlerBodyFactoryConfig<
+  IMS extends InputModelSchema,
+  EMS extends EmbeddedSchema = EmbeddedSchema,
+> = CreateHandlerBaseConfig<IMS, EMS> & BodyFactoryConfig;
+
+export const createCreateHandler = <IMS extends InputModelSchema, EMS extends EmbeddedSchema = EmbeddedSchema>(
+  config: CreateHandlerBodyFactoryConfig<IMS, EMS> | CreateHandlerConfig<IMS, EMS>,
+): Handler => {
+  const {
+    serverRequestHelpers,
+    responseFactory,
+    responseHelpers,
+    decoder,
+    inputModelSchema,
+    persistModel,
+    enrichedModelSchema,
+    encoder,
+    enrichModel = (model) => Promise.resolve(model as EnrichedModel<IMS, EMS>),
+    uuid = v7,
+  } = config;
+
   return createTypedHandler({
     serverRequestHelpers,
     responseFactory,
     responseHelpers,
-    streamFactory,
+    bodyFactory: resolveBodyFactory(config),
     request: {
       attributes: z.object({ contentType: z.string(), accept: z.string() }),
       body: inputModelSchema,

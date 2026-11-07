@@ -7,10 +7,11 @@ import { createLogger } from '@chubbyts/chubbyts-log-types/dist/log';
 import { throwableToError } from '@chubbyts/chubbyts-throwable-to-error/dist/throwable-to-error';
 import type { Handler } from '@chubbyts/chubbyts-http-types/handler';
 import type { Response, ServerRequest, Uri } from '@chubbyts/chubbyts-http-types/message';
-import type { ResponseFactory, StreamFactory } from '@chubbyts/chubbyts-http-types/message-factory';
+import type { ResponseFactory } from '@chubbyts/chubbyts-http-types/message-factory';
 import type { ResponseHelpers } from '@chubbyts/chubbyts-http-types/message-helper';
 import type { Middleware } from '@chubbyts/chubbyts-http-types/middleware';
-import { valueToData, withHeaders } from '../response.js';
+import type { BodyFactoryConfig, StreamFactoryConfig } from '../response.js';
+import { resolveBodyFactory, valueToData, withHeaders } from '../response.js';
 
 export type MapToHttpError = (e: unknown) => HttpError;
 
@@ -30,9 +31,8 @@ const eToHttpError = (e: unknown, mapToHttpError: MapToHttpError): HttpError => 
 
 const resolvePathnameSearch = (uri: Uri): string => (uri.query ? `${uri.path}?${uri.query}` : uri.path);
 
-export type ErrorMiddlewareConfig = {
+type ErrorMiddlewareBaseConfig = {
   responseFactory: ResponseFactory;
-  streamFactory: StreamFactory;
   responseHelpers: ResponseHelpers;
   encoder: Encoder;
   mapToHttpError?: MapToHttpError;
@@ -41,18 +41,25 @@ export type ErrorMiddlewareConfig = {
   loggableAttributeNames?: Array<string>;
 };
 
-export const createErrorMiddleware = ({
-  responseFactory,
-  streamFactory,
-  responseHelpers,
-  encoder,
-  mapToHttpError = (e: unknown) => {
-    throw e;
-  },
-  debug = false,
-  logger = createLogger(),
-  loggableAttributeNames = [],
-}: ErrorMiddlewareConfig): Middleware => {
+/** With the body factory under its deprecated name `streamFactory`, see `ErrorMiddlewareBodyFactoryConfig`. */
+export type ErrorMiddlewareConfig = ErrorMiddlewareBaseConfig & StreamFactoryConfig;
+
+export type ErrorMiddlewareBodyFactoryConfig = ErrorMiddlewareBaseConfig & BodyFactoryConfig;
+
+export const createErrorMiddleware = (config: ErrorMiddlewareBodyFactoryConfig | ErrorMiddlewareConfig): Middleware => {
+  const {
+    responseFactory,
+    responseHelpers,
+    encoder,
+    mapToHttpError = (e: unknown) => {
+      throw e;
+    },
+    debug = false,
+    logger = createLogger(),
+    loggableAttributeNames = [],
+  } = config;
+  const bodyFactory = resolveBodyFactory(config);
+
   return async (serverRequest: ServerRequest, handler: Handler): Promise<Response> => {
     try {
       return await handler(serverRequest);
@@ -84,7 +91,7 @@ export const createErrorMiddleware = ({
           ...httpError.headers,
           'content-type': accept,
         }),
-        streamFactory(
+        bodyFactory(
           encoder.encode(
             valueToData(
               isClientError || debug

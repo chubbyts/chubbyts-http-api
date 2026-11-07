@@ -10,7 +10,7 @@ import {
   responseFactory,
   responseHelpers,
   serverRequestHelpers,
-  streamFactory,
+  bodyFactory,
 } from '../http.js';
 import { createListHandler } from '../../src/handler/list.js';
 import { createEnrichedModelListSchema, numberSchema, sortSchema, stringSchema } from '../../src/model.js';
@@ -166,7 +166,7 @@ describe('list', () => {
         serverRequestHelpers,
         responseFactory,
         responseHelpers,
-        streamFactory,
+        bodyFactory,
         inputModelListSchema,
         resolveModelList,
         enrichedModelListSchema,
@@ -297,7 +297,7 @@ describe('list', () => {
         serverRequestHelpers,
         responseFactory,
         responseHelpers,
-        streamFactory,
+        bodyFactory,
         inputModelListSchema,
         resolveModelList,
         enrichedModelListSchema,
@@ -357,7 +357,7 @@ describe('list', () => {
         serverRequestHelpers,
         responseFactory,
         responseHelpers,
-        streamFactory,
+        bodyFactory,
         inputModelListSchema,
         resolveModelList,
         enrichedModelListSchema,
