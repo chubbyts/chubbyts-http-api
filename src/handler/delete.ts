@@ -1,5 +1,5 @@
 import { STATUS_CODES } from 'node:http';
-import { createNotFound } from '@chubbyts/chubbyts-http-error/dist/http-error';
+import { createNotFound } from '@chubbyts/chubbyts-http-error/http-error';
 import { z } from 'zod';
 import type { Handler } from '@chubbyts/chubbyts-http-types/handler';
 import type { ResponseFactory } from '@chubbyts/chubbyts-http-types/message-factory';

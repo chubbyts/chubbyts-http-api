@@ -3,8 +3,8 @@ import { EncodeError } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import { describe, expect, test } from 'vitest';
 import { createBodyFactory } from '@chubbyts/chubbyts-http/message-factory';
 import { ZodError } from 'zod';
-import { createNotFound } from '@chubbyts/chubbyts-http-error/dist/http-error';
-import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
+import { createNotFound } from '@chubbyts/chubbyts-http-error/http-error';
+import { useObjectMock } from '@chubbyts/chubbyts-function-mock/object-mock';
 import { createResponseWithData, resolveBodyFactory, valueToData } from '../src/response.js';
 import { createServerRequest, readBody, responseFactory, responseHelpers, bodyFactory } from './http.js';
 

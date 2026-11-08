@@ -2,7 +2,7 @@ import type { Data } from '@chubbyts/chubbyts-decode-encode/data';
 import { isObject, isArray, isBoolean, isNumber, isString } from '@chubbyts/chubbyts-decode-encode/data';
 import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import { EncodeError } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
-import { isHttpError } from '@chubbyts/chubbyts-http-error/dist/http-error';
+import { isHttpError } from '@chubbyts/chubbyts-http-error/http-error';
 import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/message';
 import type { ResponseFactory, BodyFactory } from '@chubbyts/chubbyts-http-types/message-factory';
 import type { ResponseHelpers } from '@chubbyts/chubbyts-http-types/message-helper';

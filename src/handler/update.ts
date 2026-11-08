@@ -1,5 +1,5 @@
 import { STATUS_CODES } from 'node:http';
-import { createNotFound } from '@chubbyts/chubbyts-http-error/dist/http-error';
+import { createNotFound } from '@chubbyts/chubbyts-http-error/http-error';
 import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import type { Decoder } from '@chubbyts/chubbyts-decode-encode/decoder/decoder';
 import { z } from 'zod';

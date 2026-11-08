@@ -1,6 +1,6 @@
-import type { HttpError } from '@chubbyts/chubbyts-http-error/dist/http-error';
+import type { HttpError } from '@chubbyts/chubbyts-http-error/http-error';
 import { describe, expect, test } from 'vitest';
-import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
+import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/function-mock';
 import { z } from 'zod';
 import { createServerRequest, responseFactory, responseHelpers, serverRequestHelpers } from '../http.js';
 import { createDeleteHandler } from '../../src/handler/delete.js';

@@ -1,8 +1,8 @@
 import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
-import type { HttpError } from '@chubbyts/chubbyts-http-error/dist/http-error';
+import type { HttpError } from '@chubbyts/chubbyts-http-error/http-error';
 import { describe, expect, test } from 'vitest';
-import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
-import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
+import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/function-mock';
+import { useObjectMock } from '@chubbyts/chubbyts-function-mock/object-mock';
 import { z } from 'zod';
 import {
   createServerRequest,

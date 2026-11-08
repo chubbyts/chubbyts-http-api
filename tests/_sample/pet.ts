@@ -4,7 +4,7 @@ import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import type { Handler } from '@chubbyts/chubbyts-http-types/handler';
 import { z } from 'zod';
 import { v7 as uuid } from 'uuid';
-import { createNotFound } from '@chubbyts/chubbyts-http-error/dist/http-error';
+import { createNotFound } from '@chubbyts/chubbyts-http-error/http-error';
 import { createTypedHandler } from '../../src/handler/typed.js';
 import type {
   EnrichedModel,

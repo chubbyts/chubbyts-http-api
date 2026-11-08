@@ -1,7 +1,7 @@
 import type { Decoder } from '@chubbyts/chubbyts-decode-encode/decoder/decoder';
 import { DecodeError } from '@chubbyts/chubbyts-decode-encode/decoder/decoder';
 import { describe, expect, test } from 'vitest';
-import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
+import { useObjectMock } from '@chubbyts/chubbyts-function-mock/object-mock';
 import { parseRequestBody } from '../src/request.js';
 import { createServerRequest } from './http.js';
 

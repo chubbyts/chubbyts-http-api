@@ -1,7 +1,7 @@
 {
   "name": "@chubbyts/chubbyts-http-api",
   "type": "module",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Type-safe CRUD handlers and middlewares for @chubbyts/chubbyts-http-types.",
   "keywords": [
     "chubbyts",
@@ -43,19 +43,19 @@
   },
   "dependencies": {
     "@chubbyts/chubbyts-decode-encode": "^2.7.0",
-    "@chubbyts/chubbyts-dic-config-factory": "^1.0.1",
-    "@chubbyts/chubbyts-dic-types": "^2.3.1",
-    "@chubbyts/chubbyts-http-error": "^3.5.1",
+    "@chubbyts/chubbyts-dic-config-factory": "^1.1.0",
+    "@chubbyts/chubbyts-dic-types": "^2.4.0",
+    "@chubbyts/chubbyts-http-error": "^3.6.0",
     "@chubbyts/chubbyts-http-types": "^4.0.0",
-    "@chubbyts/chubbyts-log-types": "^3.3.1",
-    "@chubbyts/chubbyts-negotiation": "^4.5.2",
-    "@chubbyts/chubbyts-throwable-to-error": "^2.3.4",
+    "@chubbyts/chubbyts-log-types": "^3.4.0",
+    "@chubbyts/chubbyts-negotiation": "^4.6.0",
+    "@chubbyts/chubbyts-throwable-to-error": "^2.4.0",
     "uuid": "^14.0.3",
     "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@chubbyts/chubbyts-dic-config": "^2.3.1",
-    "@chubbyts/chubbyts-function-mock": "^2.3.1",
+    "@chubbyts/chubbyts-dic-config": "^2.4.0",
+    "@chubbyts/chubbyts-function-mock": "^2.4.0",
     "@chubbyts/chubbyts-http": "^3.0.0",
     "@chubbyts/chubbyts-oxlint": "^1.0.2",
     "@stryker-mutator/core": "^10.0.0",

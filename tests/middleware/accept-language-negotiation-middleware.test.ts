@@ -1,8 +1,8 @@
-import type { HttpError } from '@chubbyts/chubbyts-http-error/dist/http-error';
-import type { Negotiator } from '@chubbyts/chubbyts-negotiation/dist/negotiation';
+import type { HttpError } from '@chubbyts/chubbyts-http-error/http-error';
+import type { Negotiator } from '@chubbyts/chubbyts-negotiation/negotiation';
 import { describe, expect, test } from 'vitest';
-import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
-import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
+import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/function-mock';
+import { useObjectMock } from '@chubbyts/chubbyts-function-mock/object-mock';
 import type { Handler } from '@chubbyts/chubbyts-http-types/handler';
 import type { ServerRequest } from '@chubbyts/chubbyts-http-types/message';
 import { createAcceptLanguageNegotiationMiddleware } from '../../src/middleware/accept-language-negotiation-middleware.js';

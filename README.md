@@ -52,12 +52,12 @@ It ships:
 
  * node: 22
  * [@chubbyts/chubbyts-decode-encode][2]: ^2.7.0
- * [@chubbyts/chubbyts-dic-config-factory][11]: ^1.0.1
- * [@chubbyts/chubbyts-dic-types][12]: ^2.3.1
- * [@chubbyts/chubbyts-http-error][3]: ^3.5.1
- * [@chubbyts/chubbyts-log-types][4]: ^3.3.1
- * [@chubbyts/chubbyts-negotiation][5]: ^4.5.2
- * [@chubbyts/chubbyts-throwable-to-error][6]: ^2.3.4
+ * [@chubbyts/chubbyts-dic-config-factory][11]: ^1.1.0
+ * [@chubbyts/chubbyts-dic-types][12]: ^2.4.0
+ * [@chubbyts/chubbyts-http-error][3]: ^3.6.0
+ * [@chubbyts/chubbyts-log-types][4]: ^3.4.0
+ * [@chubbyts/chubbyts-negotiation][5]: ^4.6.0
+ * [@chubbyts/chubbyts-throwable-to-error][6]: ^2.4.0
  * [@chubbyts/chubbyts-http-types][7]: ^4.0.0
  * [uuid][9]: ^14.0.3
  * [zod][10]: ^4.6.7
@@ -67,7 +67,7 @@ It ships:
 Through [NPM](https://www.npmjs.com) as [@chubbyts/chubbyts-http-api][1].
 
 ```sh
-npm i @chubbyts/chubbyts-http-api@^1.2.0
+npm i @chubbyts/chubbyts-http-api@^1.3.0
 ```
 
 ## Usage
@@ -284,7 +284,7 @@ Register the negotiation middlewares in front of the handlers. Each one reads a 
 #### createAcceptLanguageNegotiationMiddleware
 
 ```ts
-import { createAcceptLanguageNegotiator } from '@chubbyts/chubbyts-negotiation/dist/accept-language-negotiator';
+import { createAcceptLanguageNegotiator } from '@chubbyts/chubbyts-negotiation/accept-language-negotiator';
 import { createAcceptLanguageNegotiationMiddleware }
   from '@chubbyts/chubbyts-http-api/middleware/accept-language-negotiation-middleware';
 
@@ -299,7 +299,7 @@ const acceptLanguageNegotiationMiddleware = createAcceptLanguageNegotiationMiddl
 Feed it the content types your encoder can produce.
 
 ```ts
-import { createAcceptNegotiator } from '@chubbyts/chubbyts-negotiation/dist/accept-negotiator';
+import { createAcceptNegotiator } from '@chubbyts/chubbyts-negotiation/accept-negotiator';
 import { createAcceptNegotiationMiddleware }
   from '@chubbyts/chubbyts-http-api/middleware/accept-negotiation-middleware';
 
@@ -314,7 +314,7 @@ const acceptNegotiationMiddleware = createAcceptNegotiationMiddleware({
 Feed it the content types your decoder can parse. Only needed on routes with a request body.
 
 ```ts
-import { createContentTypeNegotiator } from '@chubbyts/chubbyts-negotiation/dist/content-type-negotiator';
+import { createContentTypeNegotiator } from '@chubbyts/chubbyts-negotiation/content-type-negotiator';
 import { createContentTypeNegotiationMiddleware }
   from '@chubbyts/chubbyts-http-api/middleware/content-type-negotiation-middleware';
 
@@ -329,7 +329,7 @@ const contentTypeNegotiationMiddleware = createContentTypeNegotiationMiddleware(
 Catches every error thrown by the wrapped handler and answers with an encoded [http-error][3].
 
 ```ts
-import { createInternalServerError } from '@chubbyts/chubbyts-http-error/dist/http-error';
+import { createInternalServerError } from '@chubbyts/chubbyts-http-error/http-error';
 import { createErrorMiddleware } from '@chubbyts/chubbyts-http-api/middleware/error-middleware';
 
 const errorMiddleware = createErrorMiddleware({
@@ -365,8 +365,8 @@ const errorMiddleware = createErrorMiddleware({
 The package ships service factories (abstract factories built on [chubbyts-dic-config-factory][11]) for a [chubbyts-dic-config][13] (or any [chubbyts-dic-types][12] compatible) container within `@chubbyts/chubbyts-http-api/service-factory`, one per middleware. They reuse the service factories of [chubbyts-decode-encode][2] and [chubbyts-negotiation][5]. The implementation of the types gets read from the services `serverRequestHelpers` (negotiation middlewares), `responseFactory`, `bodyFactory` and `responseHelpers` (error middleware), which have to be registered (if there is no `bodyFactory` service, the deprecated `streamFactory` service is used):
 
 ```ts
-import type { ConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
-import { createContainerByConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
+import type { ConfigFactory } from '@chubbyts/chubbyts-dic-config/dic-config';
+import { createContainerByConfigFactory } from '@chubbyts/chubbyts-dic-config/dic-config';
 import { decoderServiceFactory, encoderServiceFactory } from '@chubbyts/chubbyts-decode-encode/service-factory';
 import {
   acceptLanguageNegotiationMiddlewareServiceFactory,
@@ -415,8 +415,8 @@ Each factory uses the related services of the container if registered, and creat
 The same factories can be registered multiple times with a name: the name gets appended to each service id (`errorMiddlewareapi`, `encoderapi`, `mapToHttpErrorapi`, ...) and passed down to the reused factories of the other packages.
 
 ```ts
-import type { HttpError } from '@chubbyts/chubbyts-http-error/dist/http-error';
-import { createInternalServerError } from '@chubbyts/chubbyts-http-error/dist/http-error';
+import type { HttpError } from '@chubbyts/chubbyts-http-error/http-error';
+import { createInternalServerError } from '@chubbyts/chubbyts-http-error/http-error';
 import type { MapToHttpError } from '@chubbyts/chubbyts-http-api/middleware/error-middleware';
 
 const container = createContainerByConfigFactory({

@@ -1,5 +1,5 @@
-import type { Negotiator } from '@chubbyts/chubbyts-negotiation/dist/negotiation';
-import { createNotAcceptable } from '@chubbyts/chubbyts-http-error/dist/http-error';
+import type { Negotiator } from '@chubbyts/chubbyts-negotiation/negotiation';
+import { createNotAcceptable } from '@chubbyts/chubbyts-http-error/http-error';
 import type { Handler } from '@chubbyts/chubbyts-http-types/handler';
 import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/message';
 import type { ServerRequestHelpers } from '@chubbyts/chubbyts-http-types/message-helper';

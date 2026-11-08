@@ -2,8 +2,8 @@ import type { Data } from '@chubbyts/chubbyts-decode-encode/data';
 import type { Decoder } from '@chubbyts/chubbyts-decode-encode/decoder/decoder';
 import { DecodeError } from '@chubbyts/chubbyts-decode-encode/decoder/decoder';
 import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
-import type { HttpError } from '@chubbyts/chubbyts-http-error/dist/http-error';
-import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
+import type { HttpError } from '@chubbyts/chubbyts-http-error/http-error';
+import { useObjectMock } from '@chubbyts/chubbyts-function-mock/object-mock';
 import { describe, expect, test } from 'vitest';
 import { z } from 'zod';
 import {
