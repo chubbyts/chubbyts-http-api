@@ -67,7 +67,7 @@ It ships:
 Through [NPM](https://www.npmjs.com) as [@chubbyts/chubbyts-http-api][1].
 
 ```sh
-npm i @chubbyts/chubbyts-http-api@^1.3.0
+npm i @chubbyts/chubbyts-http-api@^1.3.1
 ```
 
 ## Usage
